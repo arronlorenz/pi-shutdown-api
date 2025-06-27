@@ -28,7 +28,7 @@ echo "pi ALL=(root) NOPASSWD:/sbin/shutdown" \
 echo 'SHUTDOWN_TOKEN="super-secret-string"' | sudo tee /etc/default/pi-shutdown
 
 # 4) Install or update the service
-sudo ./install.sh
+sudo bash install.sh
 ```
 
 ## Using the API
