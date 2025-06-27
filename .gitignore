@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+# Logs
+*.log
+# Editor / OS cruft
+.DS_Store
+.idea/
+.vscode/
