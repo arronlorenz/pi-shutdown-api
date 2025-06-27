@@ -46,3 +46,6 @@ sudo pip install -r requirements.txt        # Flask + Gunicorn
 # 2) Install/upgrade the systemd unit and start it
 sudo bash install.sh        # prompts for your secret token
 ```
+
+Running `install.sh` again updates the files in place. The script stops the
+existing service, installs the new version, and then starts it back up.
