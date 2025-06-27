@@ -20,19 +20,15 @@ python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt
 
-# 2) Move code to /opt and set up sudo
-sudo mkdir -p /opt/pi-shutdown
-sudo cp -r . /opt/pi-shutdown
+# 2) Set up sudo rights for the shutdown command
 echo "pi ALL=(root) NOPASSWD:/sbin/shutdown" \
   | sudo tee /etc/sudoers.d/pi-shutdown
 
 # 3) (Optional) override the token system-wide
 echo 'SHUTDOWN_TOKEN="super-secret-string"' | sudo tee /etc/default/pi-shutdown
 
-# 4) Enable and start the service
-sudo cp pi-shutdown.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now pi-shutdown.service
+# 4) Install or update the service
+sudo ./install.sh
 ```
 
 ## Using the API
