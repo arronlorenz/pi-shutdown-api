@@ -2,7 +2,7 @@
 """
 Simple HTTP endpoint that tells a Raspberry Pi to power off
 when called with the correct token:
-    GET /shutdown?token=<SECRET>
+    POST /shutdown {"token": "<SECRET>"}
 """
 
 import os
@@ -16,9 +16,12 @@ SHUTDOWN_CMD = ["/sbin/shutdown", "-h", "now"]     # or tweak to suit
 
 app = Flask(__name__)
 
-@app.route("/shutdown", methods=["GET"])
+@app.route("/shutdown", methods=["POST"])
 def shutdown():
-    if request.args.get("token") != SECRET:
+    data = request.get_json(silent=True)
+    if data is None:
+        abort(400, description="Missing JSON body")
+    if data.get("token") != SECRET:
         abort(403, description="Bad token")
     # Fire-and-forget so Flask can return immediately
     subprocess.Popen(["sudo", *SHUTDOWN_CMD])
