@@ -39,8 +39,6 @@ git clone https://github.com/yourname/pi-shutdown.git
 cd pi-shutdown
 pip install -r requirements.txt        # Flask + Gunicorn
 
-# 2) (Optional) set your own secret
-echo 'SHUTDOWN_TOKEN="super-secret"' | sudo tee /etc/default/pi-shutdown
-
-# 3) Install/upgrade the systemd unit and start it
-sudo bash install.sh
+# 2) Install/upgrade the systemd unit and start it
+sudo bash install.sh        # prompts for your secret token
+```
