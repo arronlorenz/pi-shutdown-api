@@ -13,6 +13,11 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Stop service before updating files so running instances don't hold old code
+if systemctl is-active --quiet "$SERVICE"; then
+    systemctl stop "$SERVICE"
+fi
+
 # Prompt for shutdown token and write it to TOKEN_FILE
 DEFAULT_TOKEN=CHANGE-ME
 if [ -f "$TOKEN_FILE" ]; then
