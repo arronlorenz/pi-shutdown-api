@@ -22,20 +22,14 @@ Pi cleanly and protecting your SD card.
 ## Quick-start
 
 ```bash
-# 1) Clone and create a virtualenv
+# 1) Clone and install dependencies (as root)
 git clone https://github.com/yourname/pi-shutdown.git
 cd pi-shutdown
-python3 -m venv env             # optional but recommended
-source env/bin/activate
 pip install -r requirements.txt
 
-# 2) Allow the 'pi' user to call shutdown without a password
-echo "pi ALL=(root) NOPASSWD:/sbin/shutdown" \
-  | sudo tee /etc/sudoers.d/pi-shutdown
-
-# 3) (Optional) set a custom token system-wide
+# 2) (Optional) set a custom token system-wide
 echo 'SHUTDOWN_TOKEN="super-secret-string"' \
   | sudo tee /etc/default/pi-shutdown
 
-# 4) Install / update and start the systemd service
+# 3) Install / update and start the systemd service
 sudo bash install.sh

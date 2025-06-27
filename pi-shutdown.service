@@ -3,7 +3,7 @@ Description=Tiny Flask API to shut down the Pi
 After=network.target
 
 [Service]
-User=pi
+User=root
 EnvironmentFile=/etc/default/pi-shutdown     # optional token override
 WorkingDirectory=/opt/pi-shutdown
 ExecStart=/usr/bin/gunicorn -w 2 api:app
