@@ -1,0 +1,16 @@
+[Unit]
+Description=Tiny Flask API to shut down the Pi
+After=network.target
+
+[Service]
+User=pi
+EnvironmentFile=/etc/default/pi-shutdown     # optional token override
+WorkingDirectory=/opt/pi-shutdown
+ExecStart=/usr/bin/python3 /opt/pi-shutdown/api.py
+# Let the shutdown command run even if Flask is killed
+KillMode=process
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
