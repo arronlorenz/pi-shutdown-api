@@ -35,9 +35,9 @@ avoid SD-card corruption.
 
 ```bash
 # 1) Grab the code and install Python deps (as root or in a venv)
-git clone https://github.com/yourname/pi-shutdown.git
-cd pi-shutdown
-pip install -r requirements.txt        # Flask + Gunicorn
+git clone https://github.com/arronlorenz/pi-shutdown-api.git
+cd pi-shutdown-api
+sudo pip install -r requirements.txt        # Flask + Gunicorn
 
 # 2) Install/upgrade the systemd unit and start it
 sudo bash install.sh        # prompts for your secret token
