@@ -33,3 +33,20 @@ echo 'SHUTDOWN_TOKEN="super-secret-string"' | sudo tee /etc/default/pi-shutdown
 sudo cp pi-shutdown.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now pi-shutdown.service
+```
+
+## Using the API
+
+Send your secret token in a JSON body when calling the service:
+
+```bash
+# Shut down the Pi
+curl -X POST http://<PI_IP>:5000/shutdown \
+  -H 'Content-Type: application/json' \
+  -d '{"token":"YOUR_SECRET"}'
+
+# Reboot the Pi
+curl -X POST http://<PI_IP>:5000/reboot \
+  -H 'Content-Type: application/json' \
+  -d '{"token":"YOUR_SECRET"}'
+```
