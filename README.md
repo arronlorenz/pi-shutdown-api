@@ -31,10 +31,14 @@ avoid SD-card corruption.
 
 ---
 
+## Requirements
+
+The scripts are compatible with **Python 2.7.16** and **Python 3.7.3**.
+
 ## Quick-start
 
 ```bash
-# 1) Grab the code and install Python deps (as root or in a venv)
+# 1) Grab the code and install Python deps (Python 2.7 or 3.7)
 git clone https://github.com/arronlorenz/pi-shutdown-api.git
 cd pi-shutdown-api
 sudo pip install -r requirements.txt        # Flask + Gunicorn
