@@ -5,6 +5,15 @@ __pycache__/
 *.pyd
 env/
 venv/
+# Virtualenvs
+.venv/
+# Coverage and test artifacts
+.mypy_cache/
+.pytest_cache/
+*.coverage
+htmlcov/
+# Environment secrets
+.env
 # Logs
 *.log
 # Editor / OS cruft
