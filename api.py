@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Simple HTTP endpoint that tells a Raspberry Pi to power off
-when called with the correct token:
-    POST /shutdown {"token": "<SECRET>"}
+when called with the correct token via a GET request:
+    /shutdown?token=<SECRET>
 """
 
 import os
@@ -24,13 +24,13 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-@app.route("/shutdown", methods=["POST"])
+@app.route("/shutdown", methods=["GET"])
 def shutdown():
     logger.info("Shutdown requested from %s", request.remote_addr)
-    data = request.get_json(silent=True)
-    if data is None:
-        abort(400, description="Missing JSON body")
-    if data.get("token") != SECRET:
+    token = request.args.get("token")
+    if token is None:
+        abort(400, description="Missing token")
+    if token != SECRET:
         abort(403, description="Bad token")
     cmd = ["sudo", *SHUTDOWN_CMD]
     logger.info("Executing command: %s", " ".join(cmd))
@@ -43,13 +43,13 @@ def shutdown():
     return "Shutting down…\n", 202
 
 
-@app.route("/reboot", methods=["POST"])
+@app.route("/reboot", methods=["GET"])
 def reboot():
     logger.info("Reboot requested from %s", request.remote_addr)
-    data = request.get_json(silent=True)
-    if data is None:
-        abort(400, description="Missing JSON body")
-    if data.get("token") != SECRET:
+    token = request.args.get("token")
+    if token is None:
+        abort(400, description="Missing token")
+    if token != SECRET:
         abort(403, description="Bad token")
     cmd = ["sudo", *REBOOT_CMD]
     logger.info("Executing command: %s", " ".join(cmd))
