@@ -1,2 +1,3 @@
-Flask>=2.3,<3
-gunicorn>=21.2,<22
+# Compatible with Python 2.7.16 and Python 3.7.3
+Flask>=1.1,<2
+gunicorn>=19,<20

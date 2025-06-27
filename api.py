@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Simple HTTP endpoint that tells a Raspberry Pi to power off
 when called with the correct token via a GET request:
@@ -32,7 +32,7 @@ def shutdown():
         abort(400, description="Missing token")
     if token != SECRET:
         abort(403, description="Bad token")
-    cmd = ["sudo", *SHUTDOWN_CMD]
+    cmd = ["sudo"] + SHUTDOWN_CMD
     logger.info("Executing command: %s", " ".join(cmd))
     try:
         subprocess.Popen(cmd)
@@ -51,7 +51,7 @@ def reboot():
         abort(400, description="Missing token")
     if token != SECRET:
         abort(403, description="Bad token")
-    cmd = ["sudo", *REBOOT_CMD]
+    cmd = ["sudo"] + REBOOT_CMD
     logger.info("Executing command: %s", " ".join(cmd))
     try:
         subprocess.Popen(cmd)
