@@ -4,7 +4,8 @@ After=network.target
 
 [Service]
 User=root
-EnvironmentFile=/etc/default/pi-shutdown     # optional token override
+# optional token override
+EnvironmentFile=/etc/default/pi-shutdown
 WorkingDirectory=/opt/pi-shutdown
 ExecStart=/usr/bin/gunicorn -w 2 api:app
 # Let the shutdown command run even if Flask is killed
