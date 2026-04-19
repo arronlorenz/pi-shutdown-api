@@ -1,3 +1,5 @@
-# Compatible with Python 2.7.16 and Python 3.7.3
-Flask>=1.1,<2
-gunicorn>=19,<20
+# Last Flask/gunicorn lines that still support Python 3.7.3 (the Pi's
+# stock Buster interpreter — Bullseye ships 3.9). Drop the floor when
+# the Pi moves off 3.7.
+Flask>=2.2,<2.3
+gunicorn>=22.0,<23

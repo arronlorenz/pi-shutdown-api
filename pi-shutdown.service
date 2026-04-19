@@ -1,17 +1,46 @@
 [Unit]
-Description=Tiny Flask API to shut down the Pi
+Description=LAN-only HTTP API to shut down / reboot the Pi
 After=network.target
 
 [Service]
-User=root
-# optional token override
+User=pishutdown
+Group=pishutdown
 EnvironmentFile=/etc/default/pi-shutdown
 WorkingDirectory=/opt/pi-shutdown
 ExecStart=/usr/bin/python3 -m gunicorn -w 2 -b 0.0.0.0:8000 api:app
-# Let the shutdown command run even if Flask is killed
+
+# Let the launched shutdown/reboot child survive teardown of the Gunicorn cgroup.
 KillMode=process
 Restart=on-failure
 RestartSec=3
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+# ─── Hardening ──────────────────────────────────────────────────────────────
+# The Shelly Plus 1 and the booth sit on the LAN; block everything else at the
+# kernel level so a leaked token from off-LAN can't reach the socket.
+IPAddressAllow=127.0.0.0/8
+IPAddressAllow=192.168.0.0/16
+IPAddressAllow=10.0.0.0/8
+IPAddressAllow=172.16.0.0/12
+IPAddressDeny=any
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@mount @swap @reboot @module @raw-io
 
 [Install]
 WantedBy=multi-user.target
