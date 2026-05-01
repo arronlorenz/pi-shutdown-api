@@ -25,7 +25,12 @@ IPAddressAllow=10.0.0.0/8
 IPAddressAllow=172.16.0.0/12
 IPAddressDeny=any
 
-NoNewPrivileges=true
+# NB: NoNewPrivileges is intentionally NOT set, and @reboot is NOT in the
+# syscall denylist, because the whole point of this service is to escalate
+# via `sudo -n /sbin/shutdown` and have the kernel honor a reboot/poweroff
+# syscall. NNP would block sudo's setuid escalation; filtering @reboot would
+# block the resulting shutdown(8). Either one silently breaks the service
+# while every log line still says "launched."
 ProtectSystem=strict
 ProtectHome=true
 PrivateTmp=true
@@ -40,7 +45,7 @@ LockPersonality=true
 MemoryDenyWriteExecute=true
 SystemCallArchitectures=native
 SystemCallFilter=@system-service
-SystemCallFilter=~@mount @swap @reboot @module @raw-io
+SystemCallFilter=~@mount @swap @module @raw-io
 
 [Install]
 WantedBy=multi-user.target

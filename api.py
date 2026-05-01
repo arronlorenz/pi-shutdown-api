@@ -74,16 +74,39 @@ def _authorize():
 
 
 def _fire(cmd, label):
+    """Run the privileged shutdown/reboot command and verify it didn't
+    immediately fail. The previous implementation logged "launched" the
+    instant Popen returned, which masked silent sudo failures (e.g. when
+    NoNewPrivileges blocked setuid escalation) — every log line said the
+    operation succeeded while the kernel never received a reboot syscall.
+    Capture stderr and wait briefly so a fast-failing child surfaces.
+    """
     logger.info("Executing %s command", label)
     try:
-        subprocess.Popen(cmd, start_new_session=True,
-                         stdin=subprocess.DEVNULL,
-                         stdout=subprocess.DEVNULL,
-                         stderr=subprocess.DEVNULL)
-        logger.info("%s command launched", label.capitalize())
+        proc = subprocess.Popen(cmd, start_new_session=True,
+                                stdin=subprocess.DEVNULL,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
     except Exception:
-        logger.exception("%s command failed", label.capitalize())
-        abort(500, description="Failed to execute " + label)
+        logger.exception("%s command failed to spawn", label.capitalize())
+        abort(500, description="Failed to spawn " + label)
+
+    # /sbin/shutdown -h now signals init and exits within ~1s on success.
+    # If it's still running after 5s without erroring, that's also fine —
+    # the kernel will shortly tear us down.
+    try:
+        rc = proc.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        logger.info("%s command running (no early exit) — assuming success",
+                    label.capitalize())
+        return
+
+    if rc != 0:
+        err = (proc.stderr.read() or b"").decode("utf-8", errors="replace").strip()
+        logger.error("%s command exited %d: %s", label.capitalize(), rc, err or "(no stderr)")
+        abort(500, description="Shutdown command failed (rc=%d)" % rc)
+
+    logger.info("%s command exited 0", label.capitalize())
 
 
 @app.route("/shutdown", methods=["GET", "POST"])
